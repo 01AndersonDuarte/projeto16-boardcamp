@@ -34,7 +34,7 @@ export async function getOneClient(req, res) {
         const client = await db.query(`SELECT * FROM customers WHERE id = $1;`, [id]);
         if (!client.rowCount) return res.status(404).send("Usuário não encontrado.");
 
-        res.send(client.rows);
+        res.send(client.rows[0]);
     } catch (error) {
         res.status(500).send(error.message);
     }
