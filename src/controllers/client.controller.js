@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { db } from "../database/database.connection.js";
 
 export async function postClient(req, res) {
@@ -34,7 +35,7 @@ export async function getOneClient(req, res) {
         const client = await db.query(`SELECT * FROM customers WHERE id = $1;`, [id]);
         if (!client.rowCount) return res.status(404).send("Usuário não encontrado.");
 
-        res.send(client.rows[0]);
+        res.send({...(client.rows[0]), birthday: dayjs(client.rows[0].birthday).format("YYYY-MM-DD")});
     } catch (error) {
         res.status(500).send(error.message);
     }
