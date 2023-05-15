@@ -23,7 +23,8 @@ export async function postClient(req, res) {
 export async function getClients(req, res) {
     try {
         const clients = await db.query(`SELECT * FROM customers;`);
-        res.send(clients.rows);
+        const geralClients = clients.rows.map(c=>({...c, birthday: dayjs(c.birthday).format("YYYY-MM-DD")}));
+        res.send(geralClients);
     } catch (error) {
         res.status(500).send(error.message);
     }

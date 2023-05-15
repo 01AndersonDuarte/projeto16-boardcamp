@@ -52,7 +52,8 @@ export async function finishRent(req, res) {
     const pricePerDay = findRent.rows[0].originalPrice / findRent.rows[0].daysRented;
     const date1 = findRent.rows[0].rentDate;
     const date2 = dayjs(dayjs().format("YYYY-MM-DD"));
-    const diffDays = Math.floor(date2.diff(date1) / 86400000);
+    let diffDays = Math.floor(date2.diff(date1) / 86400000) - findRent.rows[0].daysRented;
+    if(Math.sign(diffDays)===-1) diffDays=0;
 
     try {
         await db.query(`
