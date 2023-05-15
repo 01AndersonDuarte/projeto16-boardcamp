@@ -5,7 +5,7 @@ export async function postGames(req, res) {
 
     try {
         const nameGame = await db.query(`SELECT name FROM games WHERE name = $1;`, [name]);
-        if(nameGame.rowCount) return res.status(409).send("Jogo já cadastrado.");
+        if (nameGame.rowCount) return res.status(409).send("Jogo já cadastrado.");
 
         await db.query(`
             INSERT INTO games (name, image, "stockTotal", "pricePerDay") 
@@ -17,12 +17,13 @@ export async function postGames(req, res) {
     }
 }
 
-export async function getGames(req, res){
-    try{
-        const games = await db.query(`SELECT * FROM games;`);
-        
+export async function getGames(req, res) {
+    const { offset, limit } = req.query;
+    try {
+        const games = await db.query(`SELECT * FROM games LIMIT $1 OFFSET $2;`, [limit, offset]);
+
         res.send(games.rows);
-    }catch(error){
+    } catch (error) {
         res.status(500).send(error.message);
     }
 }

@@ -29,13 +29,15 @@ export async function postRental(req, res) {
 }
 
 export async function getRentals(req, res) {
+    const { offset, limit } = req.query;
+
     try {
         const rentals = await db.query(`
         SELECT rentals.*, customers.name AS "customer", games.name AS "game"
         FROM rentals JOIN customers
         ON rentals."customerId" = customers.id
         JOIN games
-        ON rentals."gameId" = games.id;`);
+        ON rentals."gameId" = games.id LIMIT $1 OFFSET $2;`, [limit, offset]);
         res.send(rentals.rows.map(r => ({ ...r, customer: { id: r.customerId, name: r.customer }, game: { id: r.gameId, name: r.game } })));
     } catch (error) {
         res.status(500).send(error.message);

@@ -21,8 +21,10 @@ export async function postClient(req, res) {
 }
 
 export async function getClients(req, res) {
+    const { offset, limit } = req.query;
+
     try {
-        const clients = await db.query(`SELECT * FROM customers;`);
+        const clients = await db.query(`SELECT * FROM customers LIMIT $1 OFFSET $2;`, [limit, offset]);
         const geralClients = clients.rows.map(c=>({...c, birthday: dayjs(c.birthday).format("YYYY-MM-DD")}));
         res.send(geralClients);
     } catch (error) {
